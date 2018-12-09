@@ -29,23 +29,13 @@ class DoublyLinkedList{
   }
 
   add(index, data){
-    let newNode = new Node(data);
     let nextNode = this._getNodeAt(index);
-
-    newNode.prev = nextNode.prev;
-    newNode.next = nextNode;
-
-    newNode.prev.next = newNode;
-    newNode.next.prev = newNode;
-
-    this._length ++;
+    this._addBefore(nextNode, data);
   }
 
   remove(index){
     let node = this._getNodeAt(index);
-    node.prev.next = node.next;
-    node.next.prev = node.prev;
-    this._length --;
+    this._removeNode(node);
   }
 
   toString(){
@@ -75,6 +65,27 @@ class DoublyLinkedList{
       stringified += node.data + ", ";
     }, getNextNode);
     return stringified;
+  }
+
+  // Main operations
+  _addBefore(nextNode, data){
+    let newNode = new Node(data);
+
+    newNode.prev = nextNode.prev;
+    newNode.next = nextNode;
+
+    newNode.prev.next = newNode;
+    newNode.next.prev = newNode;
+
+    this._length ++;
+  }
+  _removeNode(node){
+    node.prev.next = node.next;
+    node.next.prev = node.prev;
+
+    this._length --;
+
+    return node.data;
   }
 
   // Node Traversals
