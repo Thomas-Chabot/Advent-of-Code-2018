@@ -1,10 +1,11 @@
+
 class Grid {
-	constructor(numRows, numColumns, default){
+	constructor(numRows, numColumns, defaultValue){
 		this._grid = [ ];
 		
 		this._numRows = numRows;
 		this._numColumns = numColumns;
-		this._defaultValue = default;
+		this._defaultValue = defaultValue;
 		
 		this._init();
 	}
@@ -63,10 +64,10 @@ class Grid {
 		return f(column);
 	}
 	_column(colNum, canCreate){
-		if (!this._grid[column] && canCreate)
-			this._grid[column] = [ ];
+		if (!this._grid[colNum] && canCreate)
+			this._grid[colNum] = [ ];
 		
-		return this._grid[column];
+		return this._grid[colNum];
 	}
 	_borderCheck(row, col){
 		return (row >= 0 && row <= this._numRows
