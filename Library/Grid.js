@@ -1,10 +1,11 @@
 // NOTE: Grid class relies on the Point class for get & set operations
 class Grid {
-	constructor(numRows, numColumns){
+	constructor(numRows, numColumns, defaultValue){
 		this._grid = [ ];
 		
 		this._numRows = numRows;
 		this._numColumns = numColumns;
+		this._defaultValue = defaultValue;
 		
 		this._init();
 	}
@@ -20,6 +21,9 @@ class Grid {
 			return true;
 		});
 	}
+	reset(position){
+		return this._set(position, this._defaultValue);
+	}
 	
 	_init(){
 		let nRows = this._numRows;
@@ -28,7 +32,7 @@ class Grid {
 		for (let col = 0; col < nCols; col++){
 			let column = [ ];
 			for (let row = 0; row < nRows; row++){
-				column[row] = undefined;
+				column[row] = this._defaultValue;
 			}
 			this._grid[col] = column;
 		}
