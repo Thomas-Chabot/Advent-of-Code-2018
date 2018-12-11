@@ -39,6 +39,9 @@ class Grid {
 		this._init();
 	}
 	
+	get numColumns(){ return this._numColumns; }
+	get numRows(){ return this._numRows; }
+	
 	get(row, col){
 		return this._takeAction(row, col, (column)=>{
 			return column[row];
@@ -123,6 +126,9 @@ class FuelCell {
 		return this._powerLevel;
 	}
 	
+	toString(){ return this.powerLevel; }
+	toNumber(){ return this.powerLevel; }
+	
 	_calculatePowerLevel(){
 		let rackId = this._coordinate.x + 10;
 		let powerLevel = rackId * this._coordinate.y;
@@ -192,6 +198,78 @@ class FuelCells {
 	}
 }
 
+class FuelCellsPart2 extends FuelCells {
+	// This extends the FuelCells class to add a method of calculating the square with largest total power
+	// Based on dynamic programming principles.
+	// Separated to abstract the base methods from those related to the dynamic solver
+	
+	constructor(...args){
+		super(...args);
+	}
+	
+	getBestSquare(squareSize){
+		// NOTE: Run to the base class method if a size has been given
+		if (squareSize !== undefined)
+			return super.getBestSquare(squareSize);
+		
+		// Dynamically find the best square
+		let dynamicsGrid = this._grid.clone();
+		let largestSoFar = {value: 0};
+		
+		for (let size = 0; size < GRID_SIZE; size++){
+			let largest = this._getBiggestSquare(dynamicsGrid, size + 1);
+			if (largest.value > largestSoFar.value)
+				largestSoFar = largest;
+				
+			dynamicsGrid = this._contractGrid(dynamicsGrid, size + 1);
+		}
+		
+		return largestSoFar;
+	}
+	
+	_contractGrid(grid, size){
+		let newGrid = new Grid(grid.numRows - 1, grid.numColumns, (row, column) => {
+			let previousValue = grid.get(row, column);
+			let addedValue = this._grid.get(row + size, column);
+			
+			return previousValue + addedValue;
+		});
+		
+		return newGrid;
+	}
+	
+	_getBiggestSquare(grid, size){
+		let largestSquare = {value: 0};
+	
+		for (let col = 0; col < grid.numColumns - size; col++){
+			for (let row = 0; row < grid.numRows; row++){
+				let squareTotal = this._addColumns(grid, row, col, col + size);
+				if (squareTotal > largestSquare.value) {
+					largestSquare = {
+						value: squareTotal,
+						row: row + 1,
+						column: col + 1,
+						size: size
+					};
+				}
+			}
+		}
+		
+		return largestSquare;
+	}
+	_addColumns(grid, rowIndex, columnStart, columnEnd){
+		let total = 0;
+		for (let column = columnStart; column < columnEnd; column++) {
+			let value = grid.get(rowIndex, column);
+			if (!value) continue;
+			
+			total += parseInt(value);
+		}
+		return total;
+	}
+}
+
+
 // examples
 let puzzles = [
 	{
@@ -209,8 +287,17 @@ let puzzles = [
 ]
 
 for (let puzzle of puzzles){
-	let cells = new FuelCells(GRID_SIZE, GRID_SIZE, puzzle.serial);
+	let start = new Date();
+	
+	let cells = new FuelCellsPart2(GRID_SIZE, GRID_SIZE, puzzle.serial);
+	let resultPart1 = cells.getBestSquare(3).bestSquare;
+	let resultPart2 = cells.getBestSquare();
+	
+	let part1Str = `${resultPart1.x},${resultPart1.y}`;
+	let part2Str = `${resultPart2.row},${resultPart2.column},${resultPart2.size}`;
 	
 	console.log (`${puzzle.name} Output:`);
-	console.log (`Result for Part 1: `, cells.getBestSquare(3).bestSquare.toString());
+	console.log (`Result for Part 1: ${part1Str}`);
+	console.log (`Result for Part 2: ${part2Str}`);
+	console.log (`Evaluation took ${new Date() - start} ms`);
 }
