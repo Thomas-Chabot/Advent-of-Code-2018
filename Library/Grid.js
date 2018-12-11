@@ -39,9 +39,10 @@ class Grid {
 		this._each((row,col,isNextColumn)=>{
 			if (isNextColumn)
 				this._grid[col] = [ ];
-			this._grid[col][row] = this._defaultValue;
+			this._grid[col][row] = this._getPointValue(row, col);
 		});
 	}
+	_getPointValue(row, column){ return this._defaultValue; }
 	
 	_each(f){
 		let nRows = this._numRows;
