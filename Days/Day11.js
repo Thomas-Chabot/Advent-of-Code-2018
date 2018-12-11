@@ -142,7 +142,7 @@ class FuelCells extends Grid {
 			console.log("Checking Square Size ", size);
 			
 			let square = this.getBestSquare(size);
-			if (square.highestValue > best.highestValue)
+			if (square.value > best.value)
 				best = square;
 		}
 		return best;
@@ -150,19 +150,17 @@ class FuelCells extends Grid {
 	
 	getBestSquare(squareSize){
 		let bestSquare = null;
-		let highestValue = 0;
-		this._each ((row, col) => {
-			let squareValue = this._getSquareValue(row, col, squareSize);
-			if (squareValue > highestValue){
-				highestValue = squareValue;
-				bestSquare = new Point(row + 1, col + 1);
+		let best = {value: 0};
+		this._each ((row, col, isNewRow) => {
+			if (!isNewRow) return;
+			
+			let rowBest = this._calculateBestInRow(col, squareSize);
+			if (rowBest.value > best.value){
+				best = rowBest;
 			}
 		});
 		
-		return {
-			bestSquare,
-			highestValue
-		};
+		return best;
 	}
 	
 	// Constructor Overload
@@ -173,6 +171,31 @@ class FuelCells extends Grid {
 	
 	get _gridSerial(){ return this._defaultValue; }
 	
+	_calculateBestInRow(column, size){
+		let previousValue = this._getSquareValue(0, column, size);
+		let best = { };
+		
+		let setBest = ((value,index)=>{
+			best.value = value;
+			best.row = index + 1;
+			best.column = column + 1;
+		});
+		
+		setBest(previousValue, 0);
+		
+		let firstColumn = column;
+		let lastColumn = column + size - 1;
+		for (let index = 1; index < this._numRows; index++){
+			let removedColumn = this._calculateColumnTotals(index - 1, firstColumn, lastColumn);
+			let nextColumn = this._calculateColumnTotals(index + size - 1, firstColumn, lastColumn);
+			
+			previousValue = previousValue - removedColumn + nextColumn;
+			if (previousValue > best.value)
+				setBest(previousValue, index);
+		}
+		
+		return best;
+	}
 	_getSquareValue(row, column, size) {
 		if (row + size > this._numRows || column + size > this._numRows) return 0;
 		
@@ -182,18 +205,25 @@ class FuelCells extends Grid {
 				total += this.get(row + additionX, column + additionY);
 		return total;
 	}
+	
+	_calculateColumnTotals(rowIndex, columnStart, columnEnd){
+		let total = 0;
+		for (let column = columnStart; column <= columnEnd; column++)
+			total += this.get(rowIndex, column);
+		return total;
+	}
 }
 
 // examples
 let puzzles = [
-	/*{
+	{
 		name: "Example 1",
 		serial: 18
 	},
 	{
 		name: "Example 2",
 		serial: 42
-	},*/
+	},
 	{
 		name: "Puzzle",
 		serial: 2694
@@ -202,7 +232,9 @@ let puzzles = [
 
 for (let puzzle of puzzles){
 	let cells = new FuelCells(300, 300, puzzle.serial);
+	
 	console.log (`${puzzle.name} Output:`);
-	console.log (`Result for Part 1: `, cells.getBestSquare(3).bestSquare.toString());
-	console.log (`Result for Part 2: `, cells.getBest().bestSquare.toString());
+	console.log (`Result for Part 1: `, cells.getBestSquare(3));
+	console.log (`Result for Part 2: `, cells.getBest());
+
 }
