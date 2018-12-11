@@ -132,20 +132,77 @@ class FuelCells extends Grid {
 	
 	get(row, column){
 		let value = super.get(row, column);
+		if (!value) return 0;
 		return value.powerLevel;
 	}
 	
-	getBestSquare(square){
-		
+	getBest(){
+		let best = { };
+		for (let size = 0; size < 300; size++){
+			console.log("Checking Square Size ", size);
+			
+			let square = this.getBestSquare(size);
+			if (square.highestValue > best.highestValue)
+				best = square;
+		}
+		return best;
 	}
 	
+	getBestSquare(squareSize){
+		let bestSquare = null;
+		let highestValue = 0;
+		this._each ((row, col) => {
+			let squareValue = this._getSquareValue(row, col, squareSize);
+			if (squareValue > highestValue){
+				highestValue = squareValue;
+				bestSquare = new Point(row + 1, col + 1);
+			}
+		});
+		
+		return {
+			bestSquare,
+			highestValue
+		};
+	}
+	
+	// Constructor Overload
 	_getPointValue(row, column) {
 		let point = new Point(row + 1, column + 1);
 		return new FuelCell(point, this._gridSerial);
 	}
 	
 	get _gridSerial(){ return this._defaultValue; }
+	
+	_getSquareValue(row, column, size) {
+		if (row + size > this._numRows || column + size > this._numRows) return 0;
+		
+		let total = 0;
+		for (let additionX = 0; additionX < size; additionX++)
+			for (let additionY = 0; additionY < size; additionY++)
+				total += this.get(row + additionX, column + additionY);
+		return total;
+	}
 }
 
-let cells = new FuelCells(5, 5, 1);
-console.log(cells.toString());
+// examples
+let puzzles = [
+	/*{
+		name: "Example 1",
+		serial: 18
+	},
+	{
+		name: "Example 2",
+		serial: 42
+	},*/
+	{
+		name: "Puzzle",
+		serial: 2694
+	}
+]
+
+for (let puzzle of puzzles){
+	let cells = new FuelCells(300, 300, puzzle.serial);
+	console.log (`${puzzle.name} Output:`);
+	console.log (`Result for Part 1: `, cells.getBestSquare(3).bestSquare.toString());
+	console.log (`Result for Part 2: `, cells.getBest().bestSquare.toString());
+}
