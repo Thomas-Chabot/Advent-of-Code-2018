@@ -14,6 +14,9 @@ class Grid {
 		this._init();
 	}
 	
+	get numColumns(){ return this._numColumns; }
+	get numRows(){ return this._numRows; }
+	
 	get(row, col){
 		return this._takeAction(row, col, (column)=>{
 			return column[row];
