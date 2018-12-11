@@ -1,3 +1,5 @@
+let GRID_SIZE = 300;
+
 class Point {
 	constructor(x, y) {
 		this._x = x;
@@ -22,12 +24,17 @@ class Point {
 }
 
 class Grid {
-	constructor(numRows, numColumns, defaultValue){
+	constructor(numRows, numColumns, getValueFunction){
+		if (typeof(getValueFunction) !== "function"){
+			let defaultValue = getValueFunction;
+			getValueFunction = ()=>defaultValue;
+		}
+	
 		this._grid = [ ];
 		
 		this._numRows = numRows;
 		this._numColumns = numColumns;
-		this._defaultValue = defaultValue;
+		this._getValue = getValueFunction;
 		
 		this._init();
 	}
@@ -44,29 +51,18 @@ class Grid {
 		});
 	}
 	reset(row, col){
-		return this._set(row, col, this._defaultValue);
+		return this._set(row, col, this._getValue(row, col));
 	}
 	
-	toString(){
-		let str = "";
-		this._each((row, col, isNextColumn)=>{
-			if (isNextColumn)
-				str = str + "\n";
-			str = str + " " + this.get(row, col);
+	clone(){
+		let newGrid = new Grid(this._numRows, this._numColumns, this._getValue);
+		this.each((row, col) => {
+			newGrid.set(row, col, this.get(row, col));
 		});
-		return str;
+		return newGrid;
 	}
 	
-	_init(){
-		this._each((row,col,isNextColumn)=>{
-			if (isNextColumn)
-				this._grid[col] = [ ];
-			this._grid[col][row] = this._getPointValue(row, col);
-		});
-	}
-	_getPointValue(row, column){ return this._defaultValue; }
-	
-	_each(f){
+	each(f){
 		let nRows = this._numRows;
 		let nCols = this._numColumns;
 		
@@ -76,6 +72,24 @@ class Grid {
 				f(row, col, false);
 			}
 		}
+	}
+	
+	toString(){
+		let str = "";
+		this.each((row, col, isNextColumn)=>{
+			if (isNextColumn)
+				str = str + "\n";
+			str = str + " " + this.get(row, col);
+		});
+		return str;
+	}
+	
+	_init(){
+		this.each((row,col,isNextColumn)=>{
+			if (isNextColumn)
+				this._grid[col] = [ ];
+			this._grid[col][row] = this._getValue(row, col);
+		});
 	}
 	
 	_takeAction(row, col, f) {
@@ -124,92 +138,56 @@ class FuelCell {
 	}
 }
 
-class FuelCells extends Grid {
+class FuelCells {
 	constructor(numRows, numColumns, serial){
-		// NOTE: Will be using the _defaultValue property to store the grid serial value
-		super(numRows, numColumns, serial);
+		this._serial = serial;		
+		this._numRows = numRows;
+		this._numColumns = numColumns;
+		
+		this._grid = new Grid(numRows, numColumns, (row, col)=>this._getPointValue(row,col));
 	}
 	
 	get(row, column){
-		let value = super.get(row, column);
+		let value = this._grid.get(row, column);
 		if (!value) return 0;
+		
 		return value.powerLevel;
-	}
-	
-	getBest(){
-		let best = { };
-		for (let size = 0; size < 300; size++){
-			console.log("Checking Square Size ", size);
-			
-			let square = this.getBestSquare(size);
-			if (square.value > best.value)
-				best = square;
-		}
-		return best;
 	}
 	
 	getBestSquare(squareSize){
 		let bestSquare = null;
-		let best = {value: 0};
-		this._each ((row, col, isNewRow) => {
-			if (!isNewRow) return;
-			
-			let rowBest = this._calculateBestInRow(col, squareSize);
-			if (rowBest.value > best.value){
-				best = rowBest;
+		let highestValue = 0;
+		
+		this._grid.each ((row, col) => {
+			let squareValue = this._getSquareValue(row, col, squareSize);
+			if (squareValue > highestValue){
+				highestValue = squareValue;
+				bestSquare = new Point(row + 1, col + 1);
 			}
 		});
 		
-		return best;
+		return {
+			bestSquare,
+			highestValue
+		};
 	}
 	
-	// Constructor Overload
+	toString(){ return this._grid.toString(); }
+	
 	_getPointValue(row, column) {
 		let point = new Point(row + 1, column + 1);
 		return new FuelCell(point, this._gridSerial);
 	}
 	
-	get _gridSerial(){ return this._defaultValue; }
+	get _gridSerial(){ return this._serial; }
 	
-	_calculateBestInRow(column, size){
-		let previousValue = this._getSquareValue(0, column, size);
-		let best = { };
-		
-		let setBest = ((value,index)=>{
-			best.value = value;
-			best.row = index + 1;
-			best.column = column + 1;
-		});
-		
-		setBest(previousValue, 0);
-		
-		let firstColumn = column;
-		let lastColumn = column + size - 1;
-		for (let index = 1; index < this._numRows; index++){
-			let removedColumn = this._calculateColumnTotals(index - 1, firstColumn, lastColumn);
-			let nextColumn = this._calculateColumnTotals(index + size - 1, firstColumn, lastColumn);
-			
-			previousValue = previousValue - removedColumn + nextColumn;
-			if (previousValue > best.value)
-				setBest(previousValue, index);
-		}
-		
-		return best;
-	}
 	_getSquareValue(row, column, size) {
-		if (row + size > this._numRows || column + size > this._numRows) return 0;
+		if (row + size > this._numRows || column + size > this._numColumns) return 0;
 		
 		let total = 0;
 		for (let additionX = 0; additionX < size; additionX++)
 			for (let additionY = 0; additionY < size; additionY++)
 				total += this.get(row + additionX, column + additionY);
-		return total;
-	}
-	
-	_calculateColumnTotals(rowIndex, columnStart, columnEnd){
-		let total = 0;
-		for (let column = columnStart; column <= columnEnd; column++)
-			total += this.get(rowIndex, column);
 		return total;
 	}
 }
@@ -231,10 +209,8 @@ let puzzles = [
 ]
 
 for (let puzzle of puzzles){
-	let cells = new FuelCells(300, 300, puzzle.serial);
+	let cells = new FuelCells(GRID_SIZE, GRID_SIZE, puzzle.serial);
 	
 	console.log (`${puzzle.name} Output:`);
-	console.log (`Result for Part 1: `, cells.getBestSquare(3));
-	console.log (`Result for Part 2: `, cells.getBest());
-
+	console.log (`Result for Part 1: `, cells.getBestSquare(3).bestSquare.toString());
 }
