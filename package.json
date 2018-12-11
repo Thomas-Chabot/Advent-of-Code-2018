@@ -1,0 +1,26 @@
+{
+  "name": "advent-of-code-2018",
+  "version": "1.0.0",
+  "description": "advent of code answers for 2018",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Thomas-Chabot/Advent-of-Code-2018.git"
+  },
+  "keywords": [
+    "advent-of-code",
+    "solutions"
+  ],
+  "author": "thomas chabot",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Thomas-Chabot/Advent-of-Code-2018/issues"
+  },
+  "homepage": "https://github.com/Thomas-Chabot/Advent-of-Code-2018#readme",
+  "dependencies": {
+    "jimp": "^0.6.0"
+  }
+}
