@@ -1,14 +1,21 @@
-
 class Grid {
-	constructor(numRows, numColumns, defaultValue){
+	constructor(numRows, numColumns, getValueFunction){
+		if (typeof(getValueFunction) !== "function"){
+			let defaultValue = getValueFunction;
+			getValueFunction = ()=>defaultValue;
+		}
+	
 		this._grid = [ ];
 		
 		this._numRows = numRows;
 		this._numColumns = numColumns;
-		this._defaultValue = defaultValue;
+		this._getValue = getValueFunction;
 		
 		this._init();
 	}
+	
+	get numColumns(){ return this._numColumns; }
+	get numRows(){ return this._numRows; }
 	
 	get(row, col){
 		return this._takeAction(row, col, (column)=>{
@@ -22,29 +29,18 @@ class Grid {
 		});
 	}
 	reset(row, col){
-		return this._set(row, col, this._defaultValue);
+		return this._set(row, col, this._getValue(row, col));
 	}
 	
-	toString(){
-		let str = "";
-		this._each((row, col, isNextColumn)=>{
-			if (isNextColumn)
-				str = str + "\n";
-			str = str + " " + this.get(row, col);
+	clone(){
+		let newGrid = new Grid(this._numRows, this._numColumns, this._getValue);
+		this.each((row, col) => {
+			newGrid.set(row, col, this.get(row, col));
 		});
-		return str;
+		return newGrid;
 	}
 	
-	_init(){
-		this._each((row,col,isNextColumn)=>{
-			if (isNextColumn)
-				this._grid[col] = [ ];
-			this._grid[col][row] = this._getPointValue(row, col);
-		});
-	}
-	_getPointValue(row, column){ return this._defaultValue; }
-	
-	_each(f){
+	each(f){
 		let nRows = this._numRows;
 		let nCols = this._numColumns;
 		
@@ -54,6 +50,24 @@ class Grid {
 				f(row, col, false);
 			}
 		}
+	}
+	
+	toString(){
+		let str = "";
+		this.each((row, col, isNextColumn)=>{
+			if (isNextColumn)
+				str = str + "\n";
+			str = str + " " + this.get(row, col);
+		});
+		return str;
+	}
+	
+	_init(){
+		this.each((row,col,isNextColumn)=>{
+			if (isNextColumn)
+				this._grid[col] = [ ];
+			this._grid[col][row] = this._getValue(row, col);
+		});
 	}
 	
 	_takeAction(row, col, f) {
