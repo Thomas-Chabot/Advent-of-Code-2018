@@ -63,9 +63,20 @@ class UI extends UIBase {
 
 	async run(writeOutput){
 		let main = this._main;
-		for (let i = 0; i < 13000; i++){
-			if (main.next())
-        await writeOutput (main.toString(), i+1);
+		
+		let isValid = false;
+		let hasStarted = false;
+		let index = 0;
+		
+		// Go until points have been written & are now outside the viewing window
+		while (!hasStarted || isValid){
+			isValid = main.next();
+			if (isValid) {
+				// Starts once all points have been seen on the screen
+				hasStarted = true;
+				await writeOutput (main.toString(), index + 1);
+			}
+			index ++;
 		}
 	}
 
