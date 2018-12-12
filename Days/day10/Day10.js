@@ -18,23 +18,32 @@ let WRITE_CHARACTER = "*";
 /* Dependencies */
 let File = require ("./modules/File.js");
 let Image = require ("./modules/Image.js");
+let Video = require ("./modules/Video.js");
 
 /* UI */
 let UI = require ("./modules/UI.js");
 
-File.read("./input/input.txt").then((contents) => {
-	let ui = new UI(contents, WRITE_CHARACTER)
-	let curIndex = 0
+async function main(){
+	File.read("./input/input.txt").then(async (contents) => {
+		let ui = new UI(contents, WRITE_CHARACTER)
+		let curIndex = 0
+		let images = [ ];
 
-	ui.run((data, secondsPassed)=>{
-		// Has to do with Part 2 solution
-		console.log (`Index ${curIndex} has occured after ${secondsPassed} seconds`);
+		await ui.run((data, secondsPassed)=>{
+			// Has to do with Part 2 solution
+			console.log (`Index ${curIndex} has occured after ${secondsPassed} seconds`);
 
-		let path = "./output/data" + curIndex + ".png";
-		curIndex ++;
+			let path = "./output/data" + curIndex + ".png";
+			curIndex ++;
 
-		// Writes it to an image - these can be viewed to detect the message
-		// NOTE: Only writes the image if all points are visible; this cuts down on the clutter
-		return Image.writeText(path, data, WRITE_CHARACTER);
+			// Writes it to an image - these can be viewed to detect the message
+			// NOTE: Only writes the image if all points are visible; this cuts down on the clutter
+			images.push(path);
+			return Image.writeText(path, data, WRITE_CHARACTER);
+		});
+
+		Video.create("./output/video.mp4", images).then((result)=>console.log(result), (err)=>console.error(err));
 	});
-});
+}
+
+main();
