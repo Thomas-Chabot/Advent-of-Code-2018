@@ -21,6 +21,8 @@
   },
   "homepage": "https://github.com/Thomas-Chabot/Advent-of-Code-2018#readme",
   "dependencies": {
-    "jimp": "^0.6.0"
+    "ffmpeg": "0.0.4",
+    "jimp": "^0.6.0",
+    "videoshow": "^0.1.11"
   }
 }
