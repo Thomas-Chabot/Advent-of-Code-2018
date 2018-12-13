@@ -89,3 +89,5 @@ class Grid {
 			 && col >= 0 && col <= this._numColumns);
 	}
 }
+
+module.exports = Grid;
