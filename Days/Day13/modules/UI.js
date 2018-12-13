@@ -1,5 +1,7 @@
 let libraryDir = "../../../Library";
+let Point = require (libraryDir + "/Point.js");
 let UIBase = require (libraryDir + "/UIBase.js");
+let Exercise = require ("./Exercise.js");
 
 class UI extends UIBase {
 	constructor(text){
@@ -10,7 +12,7 @@ class UI extends UIBase {
 		this._lines = lines;
 		console.log(lines);
 		
-		this._exercise = new ExerciseMain(lines.length, lines[0].length);
+		this._exercise = new Exercise(lines.length, lines[0].length);
 		this._init();
 	}
 	
