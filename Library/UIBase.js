@@ -45,3 +45,5 @@ class UIBase {
 		throw new Error("_parse method must be overloaded");
 	}
 }
+
+module.exports = UIBase;
