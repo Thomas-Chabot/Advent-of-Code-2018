@@ -1,3 +1,5 @@
+let isMainModule = require ("./isMainModule.js");
+
 class Node {
   constructor(data){
     this._data = data;
@@ -128,28 +130,33 @@ class DoublyLinkedList{
   }
 }
 
+function test(){
+  let list = new DoublyLinkedList();
+  list.add(0, "Test [1]");
+  list.add(1, "Test [2]");
+  list.add(0, "Test [0]");
+  list.add(3, "Test [3]");
 
-// Testing Code
-let list = new DoublyLinkedList();
-list.add(0, "Test [1]");
-list.add(1, "Test [2]");
-list.add(0, "Test [0]");
-list.add(3, "Test [3]");
+  console.log("After Additions:");
+  console.log(list.toString());
 
-console.log("After Additions:");
-console.log(list.toString());
+  list.remove(2);
+  list.remove(1);
 
-list.remove(2);
-list.remove(1);
+  console.log("After Removals:");
+  console.log(list.toString());
 
-console.log("After Removals:");
-console.log(list.toString());
+  list.set(0, "Test - Reset [0]");
+  list.set(1, "Test - Reset [1]");
 
-list.set(0, "Test - Reset [0]");
-list.set(1, "Test - Reset [1]");
+  console.log("After Setting:");
+  console.log(list.toString());
 
-console.log("After Setting:");
-console.log(list.toString());
+  console.log (`Index 0 contains: ${list.get(0)}`)
+  console.log (`Index 1 contains: ${list.get(1)}`)
+}
 
-console.log (`Index 0 contains: ${list.get(0)}`)
-console.log (`Index 1 contains: ${list.get(1)}`)
+if (isMainModule)
+  test();
+
+module.exports = DoublyLinkedList;
