@@ -92,3 +92,5 @@ class Trie {
 		return {curNode, prevNode, index};
 	}
 }
+
+module.exports = Trie;
