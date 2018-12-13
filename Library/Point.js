@@ -20,3 +20,5 @@ class Point {
 	
 	toString(){ return `(${this.x}, ${this.y})`; }
 }
+
+module.exports = Point;
