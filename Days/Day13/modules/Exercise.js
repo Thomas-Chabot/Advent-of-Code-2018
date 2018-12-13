@@ -1,7 +1,13 @@
+/* Dependencies */
 let libraryDir = "../../../Library";
 let Grid = require (libraryDir + "/Grid.js");
 let Point = require (libraryDir + "/Point.js");
 
+/* Constants */
+const TYPE_FLOOR = ".";
+const TYPE_WALL  = "#";
+
+/* Class */
 class ExerciseMain {
 	constructor(numRows, numColumns){
 		// by default - everything is a wall
