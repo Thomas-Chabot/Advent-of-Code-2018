@@ -1,3 +1,4 @@
+let isMainModule = require("./IsMainModule.js");
 
 class Grid {
 	constructor(numRows, numColumns, getValueFunction){
@@ -91,19 +92,24 @@ class Grid {
 	}
 }
 
+function test(){
+	let grid = new Grid(5, 6, true);
+	console.log (grid.toString());
+	console.log(grid.numRows === 5);
+	console.log(grid.numColumns === 6);
 
-// Testing Code
-let grid = new Grid(5, 6, true);
-console.log (grid.toString());
-console.log(grid.numRows === 5);
-console.log(grid.numColumns === 6);
+	let grid2 = grid.clone();
+	console.log(grid2.toString() === grid.toString());
 
-let grid2 = grid.clone();
-console.log(grid2.toString() === grid.toString());
+	grid2.set(1, 1, false);
+	console.log(grid2.toString() !== grid.toString());
+	console.log(!grid2.get(1,1));
 
-grid2.set(1, 1, false);
-console.log(grid2.toString() !== grid.toString());
-console.log(!grid2.get(1,1));
+	grid2.reset(1,1);
+	console.log(grid2.get(1,1));
+}
 
-grid2.reset(1,1);
-console.log(grid2.get(1,1));
+if (isMainModule(module))
+	test();
+
+module.exports = Grid;

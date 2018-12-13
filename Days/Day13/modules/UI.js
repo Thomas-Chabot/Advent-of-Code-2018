@@ -6,18 +6,17 @@ let Exercise = require ("./Exercise.js");
 class UI extends UIBase {
 	constructor(text){
 		super(text, "");
-		
+
 		let lines = text.split("\n");
-		
+
 		this._lines = lines;
-		console.log(lines);
-		
+
 		this._exercise = new Exercise(lines.length, lines[0].length);
 		this._init();
 	}
-	
+
 	get grid(){ return this._exercise._grid; }
-	
+
 	_init(){
 		let lines = this._lines;
 		for (let lineIndex = 0; lineIndex < lines.length; lineIndex++){
