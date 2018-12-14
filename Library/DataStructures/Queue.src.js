@@ -1,19 +1,4 @@
-/*
 
-Queue.js
-
-A function to represent a queue
-
-Created by Kate Morley - http://code.iamkate.com/ - and released under the terms
-of the CC0 1.0 Universal legal code:
-
-http://creativecommons.org/publicdomain/zero/1.0/legalcode
-
-*/
-
-/* Creates a new queue. A queue is a first-in-first-out (FIFO) data structure -
- * items are added to the end of the queue and removed from the front.
- */
 function Queue(){
 
   // initialise the queue and offset
@@ -66,7 +51,31 @@ function Queue(){
   this.peek = function(){
     return (queue.length > 0 ? queue[offset] : undefined);
   }
-
+  
+  /* Returns true if the elements in the queue matches the elements
+   * in the given array
+   */
+  this.equals = function(arr){
+	let index = 0;
+	for (let element of this){
+		if (element !== arr[index])
+			return false;
+		index ++;
+	}
+	return index === arr.length;
+  }
+  
+  /* Returns an iterator so that the Queue can be looped through */
+  this[Symbol.iterator] = function(){
+	let index = -1;
+	return {
+		next: ()=>{
+			index ++;
+			return {
+				value: queue [offset + index],
+				done: offset + index === queue.length
+			};
+		}
+	}
+  }
 }
-
-module.exports = Queue; 
