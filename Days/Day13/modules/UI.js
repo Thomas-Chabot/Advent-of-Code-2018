@@ -1,8 +1,14 @@
-let libraryDir = "../../../Library";
+/* Constants */
+let Constants = require ("./Constants.js");
+let {libraryDir, modules} = Constants;
+
+/* Dependencies */
 let Point = require (libraryDir + "/Point.js");
-let UIBase = require (libraryDir + "/UIBase.js");
+let UIBase = require (modules + "/UIBase.js");
+let Direction = require (libraryDir + "/Direction.js");
 let Exercise = require ("./Exercise.js");
 
+/* UI Class */
 class UI extends UIBase {
 	constructor(text){
 		super(text, "");
@@ -16,6 +22,7 @@ class UI extends UIBase {
 	}
 
 	get grid(){ return this._exercise._grid; }
+	run(){ this._exercise.update(); }
 
 	_init(){
 		let lines = this._lines;
@@ -28,13 +35,26 @@ class UI extends UIBase {
 		}
 	}
 	_parse(character, position){
-		switch(character){
+		switch(character.toLowerCase()){
 			case "|":
 			case "-":
 			case "/":
 			case "\\":
 			case "+":
 				this._exercise.setFloor(position);
+				break;
+			case "^":
+				this._exercise.addCart(position, Direction.up);
+				break;
+			case "<":
+				this._exercise.addCart(position, Direction.left);
+				break;
+			case ">":
+				this._exercise.addCart(position, Direction.right);
+				break;
+			case "v":
+				this._exercise.addCart(position, Direction.down);
+				break;
 		}
 		return character;
 	}

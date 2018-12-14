@@ -1,4 +1,4 @@
-let library = "../../Library";
+let library = "../../Library/Modules";
 let input = "./input/input.txt";
 let output = "./output";
 
@@ -6,8 +6,10 @@ let File = require (library + "/File.js");
 let UI   = require ("./modules/UI.js");
 
 File.read(input).then((data)=>{
-  console.log("H");
   let ui = new UI(data);
+  console.log(ui.grid.toString());
+
+  ui.run();
   console.log(ui.grid.toString());
 
   // exercise result code here

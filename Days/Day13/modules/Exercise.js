@@ -1,25 +1,38 @@
-/* Dependencies */
-let libraryDir = "../../../Library";
-let Grid = require (libraryDir + "/Grid.js");
-let Point = require (libraryDir + "/Point.js");
-
 /* Constants */
-const TYPE_FLOOR = ".";
-const TYPE_WALL  = "#";
+let Constants = require ("./Constants.js");
+let {libraryDir, dataStructures, TYPE_WALL, TYPE_FLOOR, TYPE_CART, GRID_EXTRA, POINT_OFFSET} = Constants;
+
+/* Dependencies */
+let Grid = require (dataStructures + "/Grid.js");
+let Point = require (libraryDir + "/Point.js");
+let Carts = require ("./Carts.js");
 
 /* Class */
 class ExerciseMain {
 	constructor(numRows, numColumns){
 		// by default - everything is a wall
-		this._grid = new Grid(numRows + 2, numColumns + 2, TYPE_WALL);
+		let grid = new Grid(numRows + GRID_EXTRA.x, numColumns + GRID_EXTRA.y, TYPE_WALL);
+
+		this._grid = grid;
+		this._carts = new Carts(grid);
+	}
+
+	update(){
+		this._carts.update();
 	}
 
 	setFloor(point){
-		this._grid.set(point.x + 1, point.y + 1, TYPE_FLOOR);
+		point = this._parsePoint(point);
+		this._grid.set(point.x, point.y, TYPE_FLOOR);
 	}
 
 	addCart(position, direction){
+		position = this._parsePoint(position);
+		this._carts.add(position, direction);
+	}
 
+	_parsePoint(position){
+		return position.add(POINT_OFFSET);
 	}
 }
 
