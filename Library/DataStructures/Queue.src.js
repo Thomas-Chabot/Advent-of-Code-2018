@@ -1,6 +1,6 @@
 class Queue{
-	constructor(){
-		this._queue = [ ];
+	constructor(...data){
+		this._queue = [...data];
 		this._offset = 0;
 	}
 	
@@ -39,7 +39,7 @@ class Queue{
 		return index === arr.length;
 	}
 	
-    [Symbol.iterator](){
+    	[Symbol.iterator](){
 		let index = -1;
 		let queue = this._queue;
 		let offset = this._offset;
@@ -55,3 +55,5 @@ class Queue{
 		}
 	}
 }
+
+module.exports = Queue;
