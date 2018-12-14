@@ -1,8 +1,8 @@
 let Queue = require ("./Queue.js");
 
 class FixedSizeQueue extends Queue {
-	constructor(maxSize){
-		super();
+	constructor(maxSize, ...data){
+		super(...data);
 		this._sizeLimit = maxSize;
 	}
 	
