@@ -1,10 +1,10 @@
 let Point = require ("./Point.js");
 
 let Direction = {
-  up: new Point(0, 1),
-  down: new Point(0, -1),
+  right: new Point(0, 1), // seems backwards, but it's (row, column) - one column to the right
   left: new Point(0, -1),
-  right: new Point(0, 1)
+  up: new Point(-1, 0),
+  down: new Point(1, 0)
 }
 
-return Direction;
+module.exports = Direction;

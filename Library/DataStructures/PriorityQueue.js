@@ -19,7 +19,7 @@ class PriorityQueue {
     return this._heap[queueTop];
   }
   push(...values) {
-	for (let value of values){
+	   for (let value of values){
       this._heap.push(value);
       this._siftUp();
     }

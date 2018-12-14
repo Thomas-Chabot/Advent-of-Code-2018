@@ -1,4 +1,6 @@
-let isMainModule = require("./IsMainModule.js");
+let isMainModule = require("../Modules/IsMainModule.js");
+let Point = require ("../Point.js");
+let directions = require ("../Direction.js");
 
 class Grid {
 	constructor(numRows, numColumns, getValueFunction){
@@ -13,6 +15,8 @@ class Grid {
 		this._numColumns = numColumns;
 		this._getValue = getValueFunction;
 
+		this._currentCount = 0;
+
 		this._init();
 	}
 
@@ -20,11 +24,15 @@ class Grid {
 	get numRows(){ return this._numRows; }
 
 	get(rowIndex, colIndex){
+		[rowIndex, colIndex] = this._parseInputs(rowIndex, colIndex, null);
 		return this._takeAction(rowIndex, colIndex, (row)=>{
 			return row[colIndex];
 		});
 	}
 	set(rowIndex, colIndex, data){
+		[rowIndex, colIndex, data] = this._parseInputs(rowIndex, colIndex, data);
+		console.log(rowIndex, colIndex);
+
 		return this._takeAction(rowIndex, colIndex, (row)=>{
 			row[colIndex] = data;
 			return true;
@@ -32,6 +40,28 @@ class Grid {
 	}
 	reset(row, colIndex){
 		return this.set(row, colIndex, this._getValue(row, colIndex));
+	}
+
+	getAdjacent(position, spaceType){
+		let result = [ ];
+
+		this.set(position, this._currentCount ++);
+
+		for (let direction in directions){
+			let offset = directions[direction];
+			let space  = position.add(offset);
+			let sType  = this.get(space);
+
+			let directionKey = direction.charAt(0).toUpperCase();
+			this.set(space, directionKey);
+
+			console.log(`Checking ${direction}: position ${space}. Origin is ${position} with offset ${offset}`);
+			console.log(`\tSpace type is ${sType}; match against ${spaceType}: ${sType === spaceType}`);
+
+			if (sType === spaceType)
+				result.push({space, direction});
+		}
+		return result;
 	}
 
 	clone(){
@@ -72,6 +102,14 @@ class Grid {
 		});
 	}
 
+	_parseInputs(position, columnIndex, dataValue){
+		// indices check
+		if (dataValue !== undefined && columnIndex !== undefined)
+			return [position, columnIndex, dataValue];
+
+		// otherwise - it's a Point object, so extract the x & y values
+		return [position.x, position.y, columnIndex];
+	}
 	_takeAction(rowIndex, colIndex, f) {
 		if (!this._borderCheck(rowIndex, colIndex)) return false;
 
