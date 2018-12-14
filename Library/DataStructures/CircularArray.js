@@ -1,8 +1,6 @@
-let isMainModule = require("../Modules/IsMainModule.js");
-
 class CircularArray {
-	constructor(){
-		this._data = [ ];
+	constructor(...data){
+		this._data = [...data];
 	}
 
 	get size(){ return this._data.length; }
@@ -23,59 +21,19 @@ class CircularArray {
 		this._data.pop();
 	}
 	
+	fix(index){ return this._parseIndex(index); }
+	
+	each(f){
+		for (let index in this._data){
+			f(index, this._data[index]);
+		}
+	}
+	
+	toString(){
+		return `[${this._data.join(", ")}]`;
+	}
+	
 	_parseIndex(index){
 		return index % this.size;
 	}
 }
-
-/* Testing Code */
-function test(){
-	let N = 1000000;
-	let MAX_TIME = 1000;
-	
-	let startTime = new Date();
-	
-	let circularArray = new CircularArray();
-	circularArray.push(1);
-
-	console.log ("Testing push");
-	for (let i = 1; i < N; i++){
-		circularArray.push(i+1);
-	}
-	for (let i = 0; i < N; i++){
-		if (circularArray.get(i) !== i + 1)
-			return false;
-	}
-	
-	console.log ("Testing infinite get operations");
-	for (let i = 0; i < N; i++){
-		if (circularArray.get(N + i) !== i + 1)
-			return false;
-	}
-	
-	console.log ("Testing set");
-	for (let i = 0; i < N; i++){
-		circularArray.set(i, 0);
-	}
-	for (let i = 0; i < N; i++){
-		if (circularArray.get(i) !== 0)
-			return false;
-	}
-	
-	console.log ("Testing pop");
-	for (let i = 0; i < N; i++)
-		circularArray.pop();
-	
-	for (let i = 0; i < N; i++){
-		if (circularArray.get(i) !== undefined)
-			return false;
-	}
-	
-	return new Date() - startTime < MAX_TIME;
-}
-
-if (isMainModule(module))
-	test();
-
-module.exports = CircularArray;
-
