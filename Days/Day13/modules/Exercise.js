@@ -17,8 +17,15 @@ class ExerciseMain {
 		this._carts = new Carts(grid);
 	}
 
+	get collision(){
+		return this._carts.collision;
+	}
+
 	update(){
 		this._carts.update();
+		this._carts.print();
+
+		return this._carts.collision !== null;
 	}
 
 	setFloor(point){
@@ -28,6 +35,8 @@ class ExerciseMain {
 
 	addCart(position, direction){
 		position = this._parsePoint(position);
+
+		this._grid.set(position.x, position.y, TYPE_CART);
 		this._carts.add(position, direction);
 	}
 

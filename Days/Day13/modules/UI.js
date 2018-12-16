@@ -22,7 +22,19 @@ class UI extends UIBase {
 	}
 
 	get grid(){ return this._exercise._grid; }
-	run(){ this._exercise.update(); }
+	run(){
+		let hasCollided = false;
+		while (!hasCollided){
+			hasCollided = this._exercise.update();
+			this.print();
+		}
+
+		console.log (this._exercise.collision);
+	}
+
+	print(){
+			console.log(this.grid.toString());
+	}
 
 	_init(){
 		let lines = this._lines;

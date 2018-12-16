@@ -10,7 +10,6 @@ File.read(input).then((data)=>{
   console.log(ui.grid.toString());
 
   ui.run();
-  console.log(ui.grid.toString());
 
   // exercise result code here
 }, (err)=>console.log(err));

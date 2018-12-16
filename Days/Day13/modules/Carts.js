@@ -10,7 +10,11 @@ class Carts {
   constructor(grid){
       this._carts = this._getPQueue();
       this._grid = grid;
+
+      this._collision = null;
   }
+
+  get collision(){ return this._collision; }
 
   add(position, direction){
     let cart = new Cart(position, direction);
@@ -20,6 +24,15 @@ class Carts {
   update(){
     this._each((cart) => {
       cart.update(this._grid);
+      this._checkCollision(cart);
+    });
+
+    return this._collision;
+  }
+
+  print(){
+    this._each((cart)=>{
+      cart.printTo(this._grid);
     })
   }
 
@@ -39,11 +52,16 @@ class Carts {
     this._carts = newHeap;
   }
 
+  _checkCollision(cart){
+    if (this._collision !== null) return;
+    if (cart.hasCollision(this._grid))
+      this._collision = cart._position;
+  }
+
   _getPQueue(){
     return new PQueue((cart1, cart2) =>{
       // 1) if one cart is below the other, the one higher up should come first
       // 2) take whichever one is closer to the left
-      console.log(`Cart 1: ${cart1.currentRow}, Cart 2: ${cart2.currentRow}`);
       if (cart1.currentRow > cart2.currentRow)
         return false;
       else if (cart1.currentRow < cart2.currentRow)

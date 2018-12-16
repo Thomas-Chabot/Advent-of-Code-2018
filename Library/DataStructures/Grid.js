@@ -1,6 +1,7 @@
 let isMainModule = require("../Modules/IsMainModule.js");
 let Point = require ("../Point.js");
 let directions = require ("../Direction.js");
+let DEBUG = false;
 
 class Grid {
 	constructor(numRows, numColumns, getValueFunction){
@@ -31,8 +32,6 @@ class Grid {
 	}
 	set(rowIndex, colIndex, data){
 		[rowIndex, colIndex, data] = this._parseInputs(rowIndex, colIndex, data);
-		console.log(rowIndex, colIndex);
-
 		return this._takeAction(rowIndex, colIndex, (row)=>{
 			row[colIndex] = data;
 			return true;
@@ -42,10 +41,10 @@ class Grid {
 		return this.set(row, colIndex, this._getValue(row, colIndex));
 	}
 
-	getAdjacent(position, spaceType){
+	getAdjacent(position, validSpaces){
 		let result = [ ];
 
-		this.set(position, this._currentCount ++);
+		if (DEBUG) this.set(position, this._currentCount ++);
 
 		for (let direction in directions){
 			let offset = directions[direction];
@@ -53,12 +52,14 @@ class Grid {
 			let sType  = this.get(space);
 
 			let directionKey = direction.charAt(0).toUpperCase();
-			this.set(space, directionKey);
+			if (DEBUG) this.set(space, directionKey);
 
-			console.log(`Checking ${direction}: position ${space}. Origin is ${position} with offset ${offset}`);
-			console.log(`\tSpace type is ${sType}; match against ${spaceType}: ${sType === spaceType}`);
+			if (DEBUG){
+				console.log(`Checking ${direction}: position ${space}. Origin is ${position} with offset ${offset}`);
+				console.log(`\tSpace type is ${sType}; match against ${spaceType}: ${sType === spaceType}`);
+			}
 
-			if (sType === spaceType)
+			if (validSpaces.indexOf(sType) !== -1)
 				result.push({space, direction});
 		}
 		return result;

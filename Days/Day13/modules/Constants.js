@@ -4,6 +4,7 @@ const modules = libraryDir + "/modules";
 
 /* Depdencies */
 let Direction = require (libraryDir + "/Direction.js");
+let Rotation = require (libraryDir + "/Rotations.js");
 let Point = require (libraryDir + "/Point.js");
 
 /* Constants */
@@ -27,6 +28,12 @@ let FLOOR_TYPES = {
   '\\': true
 };
 
+let CART_TURNS = [
+  Rotation.left,
+  Rotation.straight,
+  Rotation.right
+];
+
 let POINT_OFFSET = new Point(1,1);
 let GRID_EXTRA = new Point(2,2);
 
@@ -41,6 +48,8 @@ module.exports = {
 
   CART_TYPES,
   FLOOR_TYPES,
+
+  CART_TURNS,
 
   GRID_EXTRA,
   POINT_OFFSET
