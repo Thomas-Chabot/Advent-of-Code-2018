@@ -30,19 +30,23 @@ class Grid {
 
 	get(rowIndex, colIndex){
 		[rowIndex, colIndex] = this._parseInputs(rowIndex, colIndex, null);
-		return this._takeAction(rowIndex, colIndex, (row)=>{
+		return this._takeAction(rowIndex, colIndex, false, (row)=>{
 			return this._valueOf(row, colIndex);
 		});
 	}
 	set(rowIndex, colIndex, data){
 		[rowIndex, colIndex, data] = this._parseInputs(rowIndex, colIndex, data);
-		return this._takeAction(rowIndex, colIndex, (row)=>{
+		return this._takeAction(rowIndex, colIndex, true, (row)=>{
 			this._setValue(row, colIndex, data);
 			return true;
 		});
 	}
 	reset(row, colIndex){
 		return this.set(row, colIndex, this._getValue(row, colIndex));
+	}
+
+	borderCheck(rowIndex,colIndex){
+		return this._borderCheck(rowIndex, colIndex);
 	}
 
 	getAdjacent(position, validSpaces){
@@ -99,7 +103,7 @@ class Grid {
 				str = str + "\n";
 			str = str + " " + this.get(row, col);
 		});
-		return str.trim();
+		return str.replace("\n", "");
 	}
 
 	_init(){
@@ -126,7 +130,7 @@ class Grid {
 		// otherwise - it's a Point object, so extract the x & y values
 		return [position.x, position.y, columnIndex];
 	}
-	_takeAction(rowIndex, colIndex, f) {
+	_takeAction(rowIndex, colIndex, isSetOperation, f) {
 		if (!this._borderCheck(rowIndex, colIndex)) return false;
 
 		let row = this._row(rowIndex);
