@@ -24,7 +24,10 @@ class UI extends UIBase {
 	get grid(){ return this._exercise._grid; }
 	run(){
 		let hasCollided = false;
+		let i = 0;
 		while (!hasCollided){
+			i++;
+
 			hasCollided = this._exercise.update();
 			this.print();
 		}
@@ -47,14 +50,21 @@ class UI extends UIBase {
 		}
 	}
 	_parse(character, position){
+		this._parseValidMovements(character, position);
+		this._parseCart(character, position);
+
+		return character;
+	}
+	_parseValidMovements(character, position){
+		let validMoves = this._calculateMoves(position, character)
+		console.log(`Position ${position.toString()} is character ${character} with valid moves ${validMoves}`)
+		if (!validMoves) return;
+
+		this._exercise.setValidMoves(position, validMoves);
+		this._exercise.setFloor(position);
+	}
+	_parseCart(character, position){
 		switch(character.toLowerCase()){
-			case "|":
-			case "-":
-			case "/":
-			case "\\":
-			case "+":
-				this._exercise.setFloor(position);
-				break;
 			case "^":
 				this._exercise.addCart(position, Direction.up);
 				break;
@@ -68,7 +78,32 @@ class UI extends UIBase {
 				this._exercise.addCart(position, Direction.down);
 				break;
 		}
-		return character;
+	}
+
+	_calculateMoves(position, character){
+		switch (character.toLowerCase()){
+			case "|":
+			case "^":
+			case "v":
+				return [
+								{space: position.up(), direction: "up"},
+				 		 		{space: position.down(), direction: "down"}
+							 ];
+			case "-":
+			case "<":
+			case ">":
+				return [
+					{space: position.left(), direction: Direction.left},
+					 position.right()];
+			case "/":
+				return [position.down(), position.right()];
+			case "\\":
+				return [position.down(), position.left()];
+			case "+":
+				return [position.up(), position.left(), position.right(), position.down()];
+			default:
+				return null;
+		}
 	}
 }
 

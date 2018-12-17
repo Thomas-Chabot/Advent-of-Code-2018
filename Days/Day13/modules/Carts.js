@@ -7,9 +7,10 @@ let PQueue = require (dataStructures + "/PriorityQueue.js");
 let Cart = require ("./Cart.js");
 
 class Carts {
-  constructor(grid){
+  constructor(grid, movementGrid){
       this._carts = this._getPQueue();
       this._grid = grid;
+      this._movementGrid = movementGrid;
 
       this._collision = null;
   }
@@ -23,7 +24,7 @@ class Carts {
 
   update(){
     this._each((cart) => {
-      cart.update(this._grid);
+      cart.update(this._grid, this._movementGrid);
       this._checkCollision(cart);
     });
 

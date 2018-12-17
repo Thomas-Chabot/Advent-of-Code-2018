@@ -12,39 +12,49 @@ class Cart {
 
     this._rotations = new CircularArray(...CART_TURNS);
     this._curRotation = 0;
+
+    this._hasCollision = false;
   }
 
   get currentRow(){ return this._position.x; }
   get currentCol(){ return this._position.y; }
 
   hasCollision(grid){
-    return grid.get(this._position) === TYPE_CART;
+    return this._hasCollision;
   }
-  
+
   printTo(grid){
     grid.set(this._position, TYPE_CART);
   }
 
-  update(grid){
+  update(grid, movementGrid){
     grid.set(this._position, TYPE_FLOOR);
 
-    let nextMove = this._getNextMove(grid);
+    let nextMove = this._getNextMove(movementGrid);
 
     this._position = this._position.add(nextMove);
     this._direction = nextMove;
 
-    return this._hasCollision;
+    let hasCollision = this._checkCollision(grid);
+    this._hasCollision = hasCollision;
+
+    this.printTo(grid);
+
+    return hasCollision;
   }
 
+  _checkCollision(grid){
+    return grid.get(this._position) === TYPE_CART;
+  }
   _getNextMove(grid){
     let validPaths = this._getPaths(grid);
-    if (validPaths.length === 1)
+    if (validPaths.length < 3)
       return this._parseDirection(validPaths[0]);
     else
       return this._turn(validPaths);
   }
   _getPaths(grid){
-    let validSpaces = grid.getAdjacent(this._position, [TYPE_FLOOR, TYPE_CART]);
+    let validSpaces = grid.get(this._position);
     let prevPosition = this._position.add(this._direction.inverse());
 
     let result = [ ];
@@ -67,7 +77,7 @@ class Cart {
   }
 
   _parseDirection(move){
-    return Direction[move.direction];
+    return Direction[move];
   }
 }
 

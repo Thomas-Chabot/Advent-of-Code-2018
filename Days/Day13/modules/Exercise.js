@@ -12,9 +12,12 @@ class ExerciseMain {
 	constructor(numRows, numColumns){
 		// by default - everything is a wall
 		let grid = new Grid(numRows + GRID_EXTRA.x, numColumns + GRID_EXTRA.y, TYPE_WALL);
+		let movementGrid = new Grid(numRows + GRID_EXTRA.x, numColumns + GRID_EXTRA.y, []);
 
 		this._grid = grid;
-		this._carts = new Carts(grid);
+		this._movementGrid = movementGrid;
+
+		this._carts = new Carts(grid, movementGrid);
 	}
 
 	get collision(){
@@ -31,6 +34,11 @@ class ExerciseMain {
 	setFloor(point){
 		point = this._parsePoint(point);
 		this._grid.set(point.x, point.y, TYPE_FLOOR);
+	}
+	setValidMoves(position, moves){
+		position = this._parsePoint(position);
+		console.log(position, moves);
+		this._movementGrid.set(position.x, position.y, moves);
 	}
 
 	addCart(position, direction){
