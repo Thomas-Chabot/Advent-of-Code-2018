@@ -14,6 +14,10 @@ class Grid {
 
 		this._numRows = numRows;
 		this._numColumns = numColumns;
+
+		this._baseRow = 0;
+		this._baseColumn = 0;
+
 		this._getValue = getValueFunction;
 
 		this._currentCount = 0;
@@ -27,13 +31,13 @@ class Grid {
 	get(rowIndex, colIndex){
 		[rowIndex, colIndex] = this._parseInputs(rowIndex, colIndex, null);
 		return this._takeAction(rowIndex, colIndex, (row)=>{
-			return row[colIndex];
+			return this._valueOf(row, colIndex);
 		});
 	}
 	set(rowIndex, colIndex, data){
 		[rowIndex, colIndex, data] = this._parseInputs(rowIndex, colIndex, data);
 		return this._takeAction(rowIndex, colIndex, (row)=>{
-			row[colIndex] = data;
+			this._setValue(row, colIndex, data);
 			return true;
 		});
 	}
@@ -77,9 +81,12 @@ class Grid {
 		let nRows = this._numRows;
 		let nCols = this._numColumns;
 
-		for (let row = 0; row < nRows; row++){
-			f(row, 0, true);
-			for (let col = 1; col < nCols; col++){
+		let baseCol = this._baseColumn;
+		let baseRow = this._baseRow;
+
+		for (let row = baseRow; row < nRows; row++){
+			f(row, baseCol, true);
+			for (let col = baseCol + 1; col < nCols; col++){
 				f(row, col, false);
 			}
 		}
@@ -92,7 +99,7 @@ class Grid {
 				str = str + "\n";
 			str = str + " " + this.get(row, col);
 		});
-		return str;
+		return str.trim();
 	}
 
 	_init(){
@@ -101,6 +108,14 @@ class Grid {
 				this._grid[row] = [ ];
 			this._grid[row][col] = this._getValue(row, col);
 		});
+	}
+
+	_valueOf(row, columnIndex){
+		return row[columnIndex];
+	}
+	_setValue(row, columnIndex, value){
+		row[columnIndex] = value;
+		return value;
 	}
 
 	_parseInputs(position, columnIndex, dataValue){
