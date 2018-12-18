@@ -19,6 +19,9 @@ class Point {
 	add(otherPoint){
 		return new Point(this.x + otherPoint.x, this.y + otherPoint.y, this.id);
 	}
+	subtract(otherPoint){
+		return this.add(otherPoint.inverse());
+	}
 
 	isLessThan(otherPoint){
 		return this.x < otherPoint.x || this.y < otherPoint.y;

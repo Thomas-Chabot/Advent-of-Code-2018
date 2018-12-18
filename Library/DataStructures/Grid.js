@@ -46,6 +46,7 @@ class Grid {
 	}
 
 	borderCheck(rowIndex,colIndex){
+		[rowIndex, colIndex] = this._parseInputs(rowIndex, colIndex);
 		return this._borderCheck(rowIndex, colIndex);
 	}
 

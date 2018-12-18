@@ -9,7 +9,7 @@ File.read(input).then((data)=>{
   let ui = new UI(data);
 //  console.log(ui.grid.toString());
 
-//  ui.run();
+  ui.run();
 
   // exercise result code here
   File.write(output, ui.output);

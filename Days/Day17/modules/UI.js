@@ -18,8 +18,7 @@ class UI extends UIBase {
 
   /* Running the exercise */
   run(){
-    while (this._exercise.hasDrops)
-      this._exercise.next();
+    this._exercise.run();
   }
 
   /* Input Parsing */

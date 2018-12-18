@@ -1,19 +1,18 @@
 let Constants = require ("./Constants.js");
-let {dataStructures, TYPE_SAND, TYPE_CLAY} = Constants;
+let {libraryDir, dataStructures, TYPE_SAND, TYPE_CLAY} = Constants;
 
 let Grid = require (dataStructures + "/GrowableGrid.js");
+let Point = require (libraryDir + "/Point.js");
 let Spring = require ("./WaterSpring.js");
 
 class Exercise {
   constructor(){
     this._grid = new Grid(TYPE_SAND);
-    this._spring = new Spring(0, 500);
+    this._spring = new Spring(this._grid, new Point(0, 500));
   }
 
-  get hasDrops(){ return this._spring.isValid; }
-
-  next(){
-    this._spring.next();
+  run(){
+    this._spring.fill();
   }
 
   setupGrid(clayPoints){

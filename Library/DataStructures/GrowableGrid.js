@@ -8,6 +8,8 @@ class GrowableGrid extends Grid {
   }
 
   set(rowIndex, colIndex, value){
+    [rowIndex, colIndex, value] = this._parseInputs(rowIndex, colIndex, value);
+
     this._updateRowColTotals(rowIndex, colIndex);
     return super.set(rowIndex, colIndex, value);
   }

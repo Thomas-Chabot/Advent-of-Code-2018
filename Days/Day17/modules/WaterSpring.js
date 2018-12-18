@@ -1,40 +1,35 @@
-let Droplet = require ("./Droplet.js");
+let Constants = require ("./Constants.js");
+let {TYPE_WATER, TYPE_SAND} = Constants;
 
 class WaterSpring{
   constructor(grid, position){
     this._grid = grid;
     this._position = position;
-
-    this._droplets = [ ];
-    this._hasValidDrop = true;
   }
 
-  get isValid(){ return this._hasValidDrop; }
+  fill(){
+    let points = [
+      this._position
+    ];
 
-  next(){
-    this._spread();
-    this._pushDown();
+    while (points.length > 0) {
+      let nextPoint = points.pop();
+      this._check(nextPoint.down(), points);
+      this._check(nextPoint.right(), points);
+      this._check(nextPoint.left(), points);
+
+      this._grid.set(nextPoint, TYPE_WATER);
+    }
   }
 
-  _each(f){
-    for (let droplet of this._droplets)
-      f(droplet);
+  _check(position, pointsArray){
+    if (this._isValid(position))
+      pointsArray.push(position);
   }
-  _spread(){
-    let droplet = new Droplet(this._grid, this._position.down);
-    this._droplets.push(droplet);
 
-    return droplet;
-  }
-  _pushDown(){
-    let hasValidDrop = false;
-
-    this._each((droplet)=>{
-      if (droplet.drop())
-        hasValidDrop = true;
-    });
-
-    this._hasValidDrop = hasValidDrop;
+  _isValid(position){
+    return this._grid.get(position) === TYPE_SAND
+        && this._grid.borderCheck(position);
   }
 }
 
