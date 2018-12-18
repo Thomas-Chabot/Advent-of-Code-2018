@@ -41,6 +41,10 @@ class PriorityQueue {
     this._siftDown();
     return replacedValue;
   }
+  each(f){
+    for (let value of this._heap)
+      f(value);
+  }
   toString(){ return this._heap.join(", ") };
   _greater(i, j) {
     return this._comparator(this._heap[i], this._heap[j]);
