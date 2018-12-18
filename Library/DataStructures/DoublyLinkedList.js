@@ -40,6 +40,12 @@ class DoublyLinkedList{
     this._removeNode(node);
   }
 
+  isEmpty(){ return this._dummy.next === this._dummy; }
+  
+  each(f){
+    return this._each(f);
+  }
+
   toString(){
     let stringForward = this._stringify((node)=>node.next);
     let stringBackward = this._stringify((node)=>node.prev);
