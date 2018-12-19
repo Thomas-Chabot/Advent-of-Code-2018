@@ -2,8 +2,6 @@ let Direction;
 
 class Point {
 	constructor(x, y) {
-		Direction = require ("./Direction.js");
-
 		this._x = x;
 		this._y = y;
 	}
@@ -16,22 +14,15 @@ class Point {
 	left(){ return this.add(Direction.left); }
 	right(){ return this.add(Direction.right); }
 
+	inverse(){
+		return new Point(-this.x, -this.y);
+	}
+
 	add(otherPoint){
 		return new Point(this.x + otherPoint.x, this.y + otherPoint.y, this.id);
 	}
 	subtract(otherPoint){
 		return this.add(otherPoint.inverse());
-	}
-
-	isLessThan(otherPoint){
-		return this.x < otherPoint.x || this.y < otherPoint.y;
-	}
-	isGreaterThan(otherPoint){
-		return this.x > otherPoint.x || this.y > otherPoint.y;
-	}
-
-	inverse(){
-		return new Point(-this.x, -this.y);
 	}
 
 	rotate(rotation){
@@ -43,6 +34,33 @@ class Point {
 		return new Point(Math.round(xPrime), Math.round(yPrime));
 	}
 
+	// Comparisons
+	isLessThan(otherPoint){
+		return this.x < otherPoint.x || this.y < otherPoint.y;
+	}
+	isGreaterThan(otherPoint){
+		return this.x > otherPoint.x || this.y > otherPoint.y;
+	}
+	isAdjacentTo(otherPoint){
+		return this.adjacencyDistanceTo(otherPoint) === 1;
+	}
+
+	// Distance Between Points
+	distanceTo(otherPoint){
+		// This uses the standard distance formula
+		return Math.sqrt(
+			Math.pow(this.x - otherPoint.x, 2) +
+			Math.pow(this.y - otherPoint.y, 2)
+		);
+	}
+	adjacencyDistanceTo(otherPoint){
+		// Calculates distance following only left-right, up-down
+		return Math.abs(otherPoint.x - this.x) +
+		       Math.abs(otherPoint.y - this.y);
+	}
+
+
+	// Method Overloading
 	toString(){ return `(${this.x}, ${this.y})`; }
 	equals(otherPosition){
 		if (!otherPosition) return false;
