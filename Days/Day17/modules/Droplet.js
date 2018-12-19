@@ -10,7 +10,7 @@ class Droplet {
   print(){
     this._grid.set(this._position, TYPE_WATER);
   }
-  
+
 /*
   drop(){
     return this._checkMoveDown() ||
@@ -38,8 +38,6 @@ class Droplet {
     return true;
   }
   _canDrop(position){
-    return this._grid.get(position) === TYPE_SAND
-        && this._grid.borderCheck(position);
   }
 */
 }

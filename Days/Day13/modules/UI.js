@@ -93,14 +93,25 @@ class UI extends UIBase {
 			case "<":
 			case ">":
 				return [
-					{space: position.left(), direction: Direction.left},
-					 position.right()];
+					{space: position.left(), direction: "left"},
+					{space: position.right(), direction: "right"}];
 			case "/":
-				return [position.down(), position.right()];
+				return [
+					{space: position.down(), direction: "down"},
+					{space: position.right(), direction: "right"}
+				];
 			case "\\":
-				return [position.down(), position.left()];
+				return [
+					{space: position.down(), direction: "down"},
+					{space: position.left(), direction: "left"}
+				];
 			case "+":
-				return [position.up(), position.left(), position.right(), position.down()];
+				return [
+					{space: position.up(), direction: "up"},
+					{space: position.left(), direction: "left"},
+					{space: position.right(), direction: "right"},
+					{space: position.down(), direction: "down"}
+				];
 			default:
 				return null;
 		}

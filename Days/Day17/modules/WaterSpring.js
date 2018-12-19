@@ -15,8 +15,8 @@ class WaterSpring{
     while (points.length > 0) {
       let nextPoint = points.pop();
       this._check(nextPoint.down(), points);
-      this._check(nextPoint.right(), points);
-      this._check(nextPoint.left(), points);
+      //this._check(nextPoint.right(), points);
+      //this._check(nextPoint.left(), points);
 
       this._grid.set(nextPoint, TYPE_WATER);
     }

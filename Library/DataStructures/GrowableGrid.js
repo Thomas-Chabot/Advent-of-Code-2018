@@ -39,7 +39,7 @@ class GrowableGrid extends Grid {
   }
 
   _updateRowColTotals(rowIndex, columnIndex){
-    this._numRows = Math.max(this._numRows, rowIndex+1);
+    this._numRows = Math.max(this._numRows, rowIndex);
     this._numColumns = Math.max(this._numColumns, columnIndex+1);
 
     this._baseRow = Math.min(this._baseRow, rowIndex);
