@@ -22,7 +22,9 @@ class UIBase {
 	_construct(lines){
 		let result = [ ];
 		for (var i = 0; i < lines.length; i++) {
-			result.push(this._parse(lines[i], i));
+			let value = this._parse(lines[i], i);
+			if (value)
+				result.push(value);
 		}
 		return result;
 	}
@@ -35,6 +37,18 @@ class UIBase {
 	_sort(comparator){
 		//console.log("sorting")
 		this._data.sort(comparator);
+	}
+	_parseInts(...values){
+		let result = [ ];
+		for (let value of values)
+			result.push(this._parseInt(value));
+		return result;
+	}
+	_parseInt(value){
+		let result = parseInt(value);
+		if (isNaN(result))
+			return value;
+		return result;
 	}
 
 	/* Must Overload */
