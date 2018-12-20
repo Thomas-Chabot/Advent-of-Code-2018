@@ -6,8 +6,6 @@ let File = require (modules + "/File.js");
 let FILE_INPUT = "./Input/Input.txt";
 
 File.read(FILE_INPUT).then((data)=>{
-  let ui = new UI(data);
+  let ui = new UI(data, 1);
   ui.run();
-
-  console.log(ui.toString());
 })
