@@ -24,20 +24,38 @@ class Exercise extends ExerciseBase {
     this._registers.bindInstructionPointer(register);
   }
 
-  runOperations(data){
-    let index = 0;
-    let currentRun = 0;
-    while (index >= 0 && index < data.length && currentRun < 5000){
-      currentRun++;
+  setRegisterValues(...values){
+    this._registers.setValues(...values);
+  }
+  getRegisterValue(index){ return this._registers.get(index); }
 
+  runOperations(data, startingIndex, exitIndex){
+    let index = startingIndex;
+    if (!exitIndex) exitIndex = -1;
+
+    while (index >= 0 && index < data.length){
       if (DEBUG)
         this._writeDebugMessage(data);
 
       this.updateInstruction(index);
       this._run(data[index]);
 
+      if (index === exitIndex) return;
+
       index = this.nextInstruction();
     }
+  }
+
+  calculateResult(x){
+    // NOTE: This was taken by translating the ElfCode into JavaScript code,
+    //       then finding a more efficient method of calculating the result.
+    // This may or may not work for other inputs
+    let result = 0;
+    for (let i = 1; i <= x; i++){
+    	if (x % i === 0)
+    		result += i;
+    }
+    return result;
   }
 
   _run(data){
