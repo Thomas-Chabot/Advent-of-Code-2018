@@ -12,6 +12,7 @@ class Carts {
       this._grid = grid;
       this._movementGrid = movementGrid;
 
+      this._run = 0;
       this._collision = null;
   }
 
@@ -24,10 +25,16 @@ class Carts {
 
   update(){
     this._each((cart) => {
+      if (this._collision) return;
+
       cart.update(this._grid, this._movementGrid);
-      this._checkCollision(cart);
+      if (this._checkCollision(cart))
+        return;
+
+      cart.printTo(this._grid);
     });
 
+    console.log(this._grid.toString());
     return this._collision;
   }
 
@@ -54,9 +61,19 @@ class Carts {
   }
 
   _checkCollision(cart){
-    if (this._collision !== null) return;
-    if (cart.hasCollision(this._grid))
+    this._run ++;
+
+    if (this._collision !== null) return true;
+    if (cart.hasCollision(this._grid)){
       this._collision = cart._position;
+
+      console.log(cart._position, 'X')
+      this._grid.set(cart._position, "X");
+
+      return true;
+    }
+
+    return false;
   }
 
   _getPQueue(){
