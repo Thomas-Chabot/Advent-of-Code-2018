@@ -11,16 +11,29 @@ class UI extends UIBase {
     this._instructionPointerIndex = -1;
     this._init();
 
-    this._exercise = new Exercise(1,0,0,0,0,0);
+    this._exercise = new Exercise(0, 0, 0, 0, 0, 0);
   }
 
   run(){
     this._exercise.setInstructionBinding(this._instructionPointerIndex);
-    this._exercise.runOperations(this._data);
+
+    // Part 1
+    let p1Result = this._calculateResult();
+
+    // Part 2
+    this._exercise.setRegisterValues(1, 0, 0, 0, 0, 0);
+    let p2Result = this._calculateResult();
+
+    console.log(`Part 1 Result: ${p1Result}`);
+    console.log(`Part 2 Result: ${p2Result}`);
   }
 
-  toString(){ return this._exercise.toString(); }
+  _calculateResult(){
+    this._exercise.runOperations(this._data, 0, 3);
 
+    let x = this._exercise.getRegisterValue(2);
+    return this._exercise.calculateResult(x);
+  }
   _parse(data){
     if (data.startsWith("#ip"))
       return this._parseInstructionPointer(data);
