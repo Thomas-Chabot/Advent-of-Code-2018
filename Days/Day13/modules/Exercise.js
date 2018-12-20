@@ -26,7 +26,7 @@ class ExerciseMain {
 
 	update(){
 		this._carts.update();
-		this._carts.print();
+		//this._carts.print();
 
 		return this._carts.collision !== null;
 	}
@@ -37,7 +37,6 @@ class ExerciseMain {
 	}
 	setValidMoves(position, moves){
 		position = this._parsePoint(position);
-		console.log(position, moves);
 		this._movementGrid.set(position.x, position.y, moves);
 	}
 
