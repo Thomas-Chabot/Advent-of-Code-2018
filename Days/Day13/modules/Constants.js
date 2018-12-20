@@ -25,7 +25,8 @@ let FLOOR_TYPES = {
   '|': true,
   '-': true,
   '/': true,
-  '\\': true
+  '\\': true,
+  '+': true
 };
 
 let CART_TURNS = [
@@ -34,8 +35,8 @@ let CART_TURNS = [
   Rotation.right
 ];
 
-let POINT_OFFSET = new Point(1,1);
-let GRID_EXTRA = new Point(2,2);
+let POINT_OFFSET = new Point(0,0);
+let GRID_EXTRA = new Point(0,0);
 
 module.exports = {
   libraryDir,
