@@ -34,6 +34,9 @@ class Registers extends RegistersBase {
       this._instruction = value;
     super.set(register, value);
   }
+  setValues(...values){
+    super.setValues(...values);
+  }
 }
 
 module.exports = Registers;
