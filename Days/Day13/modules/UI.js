@@ -1,6 +1,6 @@
 /* Constants */
 let Constants = require ("./Constants.js");
-let {libraryDir, modules} = Constants;
+let {libraryDir, modules, FLOOR_TYPES, TYPE_FLOOR, TYPE_CART} = Constants;
 
 /* Dependencies */
 let Point = require (libraryDir + "/Point.js");
@@ -22,17 +22,20 @@ class UI extends UIBase {
 	}
 
 	get grid(){ return this._exercise._grid; }
-	run(){
+	run(save){
 		let hasCollided = false;
 		let i = 0;
-		while (!hasCollided){
+		let next = ()=>{
+			if (hasCollided)
+				return console.log (this._exercise.collision);
+
 			i++;
 
 			hasCollided = this._exercise.update();
-			this.print();
+			save(this.grid.toString()).then(next);
 		}
 
-		console.log (this._exercise.collision);
+		next();
 	}
 
 	print(){
@@ -40,28 +43,36 @@ class UI extends UIBase {
 	}
 
 	_init(){
+		this._initGrid((char, position)=>this._parse(char, position));
+		this._initGrid((char, position)=>this._parseValidMovements(char, position));
+	}
+	_initGrid(initFunc){
 		let lines = this._lines;
 		for (let lineIndex = 0; lineIndex < lines.length; lineIndex++){
 			let line = lines[lineIndex].split("");
 			for (let charIndex = 0; charIndex < line.length; charIndex++){
 				let position = new Point(lineIndex, charIndex);
-				this._parse(line[charIndex], position);
+				initFunc(line[charIndex], position);
 			}
 		}
 	}
 	_parse(character, position){
-		this._parseValidMovements(character, position);
+		this._parseFloor(character, position);
 		this._parseCart(character, position);
 
 		return character;
 	}
+	_parseFloor(character, position){
+		let isFloor = this._isValidFloorType(character);
+		if (!isFloor) return;
+
+		this._exercise.setFloor(position);
+	}
 	_parseValidMovements(character, position){
-		let validMoves = this._calculateMoves(position, character)
-		console.log(`Position ${position.toString()} is character ${character} with valid moves ${validMoves}`)
+		let validMoves = this._calculateMoves(position, character, this.grid);
 		if (!validMoves) return;
 
 		this._exercise.setValidMoves(position, validMoves);
-		this._exercise.setFloor(position);
 	}
 	_parseCart(character, position){
 		switch(character.toLowerCase()){
@@ -80,7 +91,20 @@ class UI extends UIBase {
 		}
 	}
 
-	_calculateMoves(position, character){
+	_isValidFloorType(character){
+		return FLOOR_TYPES[character] !== undefined;
+	}
+	_areValidPositions(grid, ...positions){
+		let isFloor = (type)=>{
+			return type === TYPE_FLOOR || type === TYPE_CART;
+		}
+		for (let position of positions){
+			if (!isFloor(grid.get(position)))
+				return false;
+		}
+		return true;
+	}
+	_calculateMoves(position, character, grid){
 		switch (character.toLowerCase()){
 			case "|":
 			case "^":
@@ -94,17 +118,34 @@ class UI extends UIBase {
 			case ">":
 				return [
 					{space: position.left(), direction: "left"},
-					{space: position.right(), direction: "right"}];
-			case "/":
-				return [
-					{space: position.down(), direction: "down"},
 					{space: position.right(), direction: "right"}
 				];
-			case "\\":
+			case "/":
+				var down = position.down();
+				var right = position.right();
+
+				if (this._areValidPositions(grid, down, right))
+					return [
+						{space: position.down(), direction: "down"},
+						{space: position.right(), direction: "right"}
+					];
+
 				return [
-					{space: position.down(), direction: "down"},
-					{space: position.left(), direction: "left"}
-				];
+					{ space: position.up(), direction: "up" },
+					{ space: position.left(), direction: "left" }
+				]
+			case "\\":
+				var down = position.down();
+				var left = position.left();
+				if (this._areValidPositions(grid, down, left))
+					return [
+						{space: position.down(), direction: "down"},
+						{space: position.left(), direction: "left"}
+					];
+				return [
+					{space: position.up(), direction: "up"},
+					{space: position.right(), direction: "right"}
+				]
 			case "+":
 				return [
 					{space: position.up(), direction: "up"},
