@@ -1,6 +1,6 @@
 /* Constants */
 let Constants = require ("./Constants.js");
-let {libraryDir, dataStructures, TYPE_WALL, TYPE_FLOOR, TYPE_CART, CART_TURNS} = Constants;
+let {libraryDir, dataStructures, TYPE_WALL, TYPE_FLOOR, TYPE_CART, CART_TURNS, POINT_OFFSET} = Constants;
 
 let Direction = require (libraryDir + "/Direction.js");
 let CircularArray = require (dataStructures + "/CircularArray.js");
@@ -18,6 +18,7 @@ class Cart {
   get currentCol(){ return this._position.y; }
 
   hasCollision(grid){
+    console.log(this._position, grid.get(this._position));
     return grid.get(this._position) === TYPE_CART;
   }
 
@@ -25,26 +26,26 @@ class Cart {
     grid.set(this._position, TYPE_CART);
   }
 
-  update(grid){
+  update(grid, movementGrid){
     grid.set(this._position, TYPE_FLOOR);
 
-    let nextMove = this._getNextMove(grid);
+    let nextMove = this._getNextMove(grid, movementGrid);
 
+    this._prevPosition = this._position;
     this._position = this._position.add(nextMove);
     this._direction = nextMove;
-
-    return this._hasCollision;
   }
 
-  _getNextMove(grid){
-    let validPaths = this._getPaths(grid);
+  _getNextMove(grid, movementGrid){
+    let validPaths = this._getPaths(movementGrid);
+    console.log("At position ", this._position.toString(), " has valid paths ", validPaths);
     if (validPaths.length === 1)
       return this._parseDirection(validPaths[0]);
     else
       return this._turn(validPaths);
   }
   _getPaths(grid){
-    let validSpaces = grid.getAdjacent(this._position, [TYPE_FLOOR, TYPE_CART]);
+    let validSpaces = grid.get(this._position);
     let prevPosition = this._position.add(this._direction.inverse());
 
     let result = [ ];
