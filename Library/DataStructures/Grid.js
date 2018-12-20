@@ -1,10 +1,15 @@
 let isMainModule = require("../Modules/IsMainModule.js");
 let Point = require ("../Point.js");
 let directions = require ("../Direction.js");
+let surroundings = require ("../Surroundings.js");
+
 let DEBUG = false;
 
 class Grid {
 	constructor(numRows, numColumns, getValueFunction){
+		[numRows, numColumns, getValueFunction] = this._parseInputs(numRows, numColumns, getValueFunction || null);
+		console.log(numRows, numColumns);
+
 		if (typeof(getValueFunction) !== "function"){
 			let defaultValue = getValueFunction;
 			getValueFunction = ()=>defaultValue;
@@ -51,27 +56,10 @@ class Grid {
 	}
 
 	getAdjacent(position, validSpaces){
-		let result = [ ];
-
-		if (DEBUG) this.set(position, this._currentCount ++);
-
-		for (let direction in directions){
-			let offset = directions[direction];
-			let space  = position.add(offset);
-			let sType  = this.get(space);
-
-			let directionKey = direction.charAt(0).toUpperCase();
-			if (DEBUG) this.set(space, directionKey);
-
-			if (DEBUG){
-				console.log(`Checking ${direction}: position ${space}. Origin is ${position} with offset ${offset}`);
-				console.log(`\tSpace type is ${sType}; match against ${spaceType}: ${sType === spaceType}`);
-			}
-
-			if (validSpaces.indexOf(sType) !== -1)
-				result.push({space, direction});
-		}
-		return result;
+		return this._getTypesFromOffsets(position, directions).filter((a)=>validSpaces.indexOf(a.space) !== -1);
+	}
+	getSurroundings(position){
+		return this._getTypesFromOffsets(position, surroundings);
 	}
 
 	clone(){
@@ -101,7 +89,7 @@ class Grid {
 		let str = "";
 		this.each((row, col, isNextColumn)=>{
 			if (isNextColumn)
-				str = str + "\n";
+				str = str + "\r\n";
 			str = str + " " + this.get(row, col);
 		});
 		return str.replace("\n", "");
@@ -121,6 +109,30 @@ class Grid {
 	_setValue(row, columnIndex, value){
 		row[columnIndex] = value;
 		return value;
+	}
+
+	_getTypesFromOffsets(position, offsets){
+		let result = [ ];
+
+		if (DEBUG) this.set(position, this._currentCount ++);
+
+		for (let key in offsets){
+			let offset = offsets[key];
+			let space  = position.add(offset);
+			let sType  = this.get(space);
+
+			if (DEBUG){
+				console.log(`Checking ${key}: position ${space}. Origin is ${position} with offset ${offset}`);
+				console.log(`\tSpace type is ${sType}`);
+			}
+
+			result.push({
+				space: space,
+				spaceType: sType,
+				key: key
+			});
+		}
+		return result;
 	}
 
 	_parseInputs(position, columnIndex, dataValue){
