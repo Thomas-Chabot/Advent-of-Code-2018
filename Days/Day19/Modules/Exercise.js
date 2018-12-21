@@ -13,6 +13,8 @@ class Exercise extends ExerciseBase {
     this._setRegisters(new Registers(...values))
   }
 
+  set processLine(f){ this._onLineProcessed = f; }
+
   updateInstruction(index){
     this._registers.setInstruction(index);
   }
@@ -30,12 +32,15 @@ class Exercise extends ExerciseBase {
   getRegisterValue(index){ return this._registers.get(index); }
 
   runOperations(data, startingIndex, exitIndex){
-    let index = startingIndex;
+    let index = (startingIndex === undefined ? this._registers.getInstruction() : 0);
     if (!exitIndex) exitIndex = -1;
 
     while (index >= 0 && index < data.length){
       if (DEBUG)
         this._writeDebugMessage(data);
+
+      if (!this._processLine())
+        break;
 
       this.updateInstruction(index);
       this._run(data[index]);
@@ -68,7 +73,15 @@ class Exercise extends ExerciseBase {
     let instruction = data[lineNumber];
     let registerValues = this._registers.toString();
 
-    console.log(`ip=${lineNumber} [${registerValues}] ${instruction}`);
+    let output = `ip=${lineNumber} [${registerValues}] ${instruction}`;
+  }
+
+  _processLine(){
+    if (!this._onLineProcessed) return true;
+
+    let lineNumber = this.getCurrentInstruction();
+    let result = this._onLineProcessed(lineNumber);
+    return result !== false;
   }
 }
 
