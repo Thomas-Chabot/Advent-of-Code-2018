@@ -1,29 +1,19 @@
 let Direction;
+let VectorBase = require ("./VectorBase.js");
+let isMainModule = require ("../Modules/IsMainModule.js");
 
-class Point {
+class Vector2 extends VectorBase {
 	constructor(x, y) {
-		this._x = x;
-		this._y = y;
+		super(x, y);
 	}
 
-	get x(){ return this._x; }
-	get y(){ return this._y; }
+	get x(){ return this.getCoordinate(0); }
+	get y(){ return this.getCoordinate(1); }
 
 	up(){ return this.add(Direction.up); }
 	down(){ return this.add(Direction.down); }
 	left(){ return this.add(Direction.left); }
 	right(){ return this.add(Direction.right); }
-
-	inverse(){
-		return new Point(-this.x, -this.y);
-	}
-
-	add(otherPoint){
-		return new Point(this.x + otherPoint.x, this.y + otherPoint.y, this.id);
-	}
-	subtract(otherPoint){
-		return this.add(otherPoint.inverse());
-	}
 
 	rotate(rotation){
 		let radians = rotation * (Math.PI / 180);
@@ -31,16 +21,10 @@ class Point {
 		let xPrime = (this.x * Math.cos(radians)) - (this.y * Math.sin(radians))
 		let yPrime = (this.y * Math.cos(radians)) + (this.x * Math.sin(radians));
 
-		return new Point(Math.round(xPrime), Math.round(yPrime));
+		return this._new([Math.round(xPrime), Math.round(yPrime)]);
 	}
 
 	// Comparisons
-	isLessThan(otherPoint){
-		return this.x < otherPoint.x || this.y < otherPoint.y;
-	}
-	isGreaterThan(otherPoint){
-		return this.x > otherPoint.x || this.y > otherPoint.y;
-	}
 	isAdjacentTo(otherPoint){
 		return this.adjacencyDistanceTo(otherPoint) === 1;
 	}
@@ -62,10 +46,21 @@ class Point {
 
 	// Method Overloading
 	toString(){ return `(${this.x}, ${this.y})`; }
-	equals(otherPosition){
-		if (!otherPosition) return false;
-		return this.x === otherPosition.x && this.y === otherPosition.y;
-	}
+	_new(coordinates){ return new Vector2(...coordinates); }
 }
 
-module.exports = Point;
+function test(){
+	let point = new Vector2(1,0);
+	console.log(point.x, point.y, point.toString());
+
+	let newPoint = point.add(new Vector2(0,1));
+	console.log(newPoint.x, newPoint.y, newPoint.toString());
+
+	newPoint = newPoint.subtract(point);
+	console.log(newPoint.x, newPoint.y, newPoint.toString());
+}
+
+if (isMainModule(module))
+	test();
+
+module.exports = Vector2;
