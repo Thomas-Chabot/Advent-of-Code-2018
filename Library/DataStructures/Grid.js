@@ -1,7 +1,7 @@
 let isMainModule = require("../Modules/IsMainModule.js");
-let Point = require ("../Point.js");
-let directions = require ("../Direction.js");
-let surroundings = require ("../Surroundings.js");
+let Point = require ("..Vectors//Point.js");
+let directions = require ("..Vectors//Direction.js");
+let surroundings = require ("../Vectors/Surroundings.js");
 
 let DEBUG = false;
 

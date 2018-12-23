@@ -1,9 +1,9 @@
 let Constants = require ("./Constants.js");
-let {libraryDir, dataStructures} = Constants;
+let {libraryDir, dataStructures, vectors} = Constants;
 
 let Acre = require ("./Acre.js");
 let Grid = require (dataStructures + "/Grid.js");
-let Point = require (libraryDir + "/Point.js");
+let Point = require (vectors + "/Vector2.js");
 
 class Exercise {
   constructor(numRows, numColumns){

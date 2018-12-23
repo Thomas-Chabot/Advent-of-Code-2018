@@ -1,6 +1,7 @@
 const libraryDir = "../../../Library"
 const dataStructures = libraryDir + "/DataStructures";
-const modules = libraryDir + "/modules";
+const modules = libraryDir + "/Modules";
+const vectors = libraryDir + "/Vectors";
 
 const TYPE_OPEN = '.';
 const TYPE_TREE = '|';
@@ -11,6 +12,7 @@ module.exports = {
   libraryDir,
   dataStructures,
   modules,
+  vectors,
 
   TYPE_OPEN,
   TYPE_TREE,

@@ -1,10 +1,10 @@
 /* Constants */
 let Constants = require ("./Constants.js");
-let {libraryDir, dataStructures, TYPE_WALL, TYPE_FLOOR, TYPE_CART, GRID_EXTRA, POINT_OFFSET} = Constants;
+let {libraryDir, dataStructures, vectors, TYPE_WALL, TYPE_FLOOR, TYPE_CART, GRID_EXTRA, POINT_OFFSET} = Constants;
 
 /* Dependencies */
 let Grid = require (dataStructures + "/Grid.js");
-let Point = require (libraryDir + "/Point.js");
+let Point = require (vectors + "/Point.js");
 let Carts = require ("./Carts.js");
 
 /* Class */

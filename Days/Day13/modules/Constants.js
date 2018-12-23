@@ -1,11 +1,12 @@
 const libraryDir = "../../../Library"
 const dataStructures = libraryDir + "/DataStructures";
 const modules = libraryDir + "/modules";
+const vectors = libraryDir + "/Vectors";
 
 /* Depdencies */
-let Direction = require (libraryDir + "/Direction.js");
-let Rotation = require (libraryDir + "/Rotations.js");
-let Point = require (libraryDir + "/Point.js");
+let Direction = require (vectors + "/Direction.js");
+let Rotation = require (vectors + "/Rotations.js");
+let Point = require (vectors + "/Point.js");
 
 /* Constants */
 const TYPE_FLOOR = ".";
@@ -42,6 +43,7 @@ module.exports = {
   libraryDir,
   dataStructures,
   modules,
+  vectors,
 
   TYPE_WALL,
   TYPE_FLOOR,

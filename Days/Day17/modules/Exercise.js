@@ -1,8 +1,8 @@
 let Constants = require ("./Constants.js");
-let {libraryDir, dataStructures, TYPE_SAND, TYPE_CLAY} = Constants;
+let {libraryDir, dataStructures, vectors, TYPE_SAND, TYPE_CLAY} = Constants;
 
 let Grid = require (dataStructures + "/GrowableGrid.js");
-let Point = require (libraryDir + "/Point.js");
+let Point = require (vectors + "/Point.js");
 let Spring = require ("./WaterSpring.js");
 
 class Exercise {

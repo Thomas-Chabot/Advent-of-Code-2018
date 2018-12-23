@@ -1,8 +1,8 @@
 /* Constants */
 let Constants = require ("./Constants.js");
-let {libraryDir, dataStructures, TYPE_WALL, TYPE_FLOOR, TYPE_CART, CART_TURNS, POINT_OFFSET} = Constants;
+let {libraryDir, dataStructures, vectors, TYPE_WALL, TYPE_FLOOR, TYPE_CART, CART_TURNS, POINT_OFFSET} = Constants;
 
-let Direction = require (libraryDir + "/Direction.js");
+let Direction = require (vectors + "/Direction.js");
 let CircularArray = require (dataStructures + "/CircularArray.js");
 
 class Cart {
