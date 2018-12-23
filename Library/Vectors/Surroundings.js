@@ -1,4 +1,4 @@
-let Point = require ("./Point.js");
+let Point = require ("./Vector2.js");
 
 let Surroundings = {
   right: new Point(0, 1), // seems backwards, but it's (row, column) - one column to the right

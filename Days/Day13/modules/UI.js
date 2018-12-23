@@ -3,7 +3,7 @@ let Constants = require ("./Constants.js");
 let {libraryDir, modules, FLOOR_TYPES, TYPE_FLOOR, TYPE_CART} = Constants;
 
 /* Dependencies */
-let Point = require (vectors + "/Point.js");
+let Point = require (vectors + "/Vector2.js");
 let UIBase = require (modules + "/UIBase.js");
 let Direction = require (vectors + "/Direction.js");
 let Exercise = require ("./Exercise.js");

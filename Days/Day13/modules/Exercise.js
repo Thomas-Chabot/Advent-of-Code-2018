@@ -4,7 +4,7 @@ let {libraryDir, dataStructures, vectors, TYPE_WALL, TYPE_FLOOR, TYPE_CART, GRID
 
 /* Dependencies */
 let Grid = require (dataStructures + "/Grid.js");
-let Point = require (vectors + "/Point.js");
+let Point = require (vectors + "/Vector2.js");
 let Carts = require ("./Carts.js");
 
 /* Class */

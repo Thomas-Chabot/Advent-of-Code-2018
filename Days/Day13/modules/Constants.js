@@ -6,7 +6,7 @@ const vectors = libraryDir + "/Vectors";
 /* Depdencies */
 let Direction = require (vectors + "/Direction.js");
 let Rotation = require (vectors + "/Rotations.js");
-let Point = require (vectors + "/Point.js");
+let Point = require (vectors + "/Vector2.js");
 
 /* Constants */
 const TYPE_FLOOR = ".";
